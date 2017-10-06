@@ -1,13 +1,11 @@
-package com.revature.TicketService.models;
+package com.revature.TicketService.mock;
 
 public class Seats
 {
-	private static Seats instance = null;
-
 	private final int TOTAL_SEATS = 10;
-	
-	public final int SEAT_HOLD_TIMEOUT_IN_SECONDS = 1800; //30 min
 
+	private static Seats instance = null;
+	
 	private int availableSeats = TOTAL_SEATS;
 
 	private Seats(){}
@@ -37,7 +35,5 @@ public class Seats
 			throw new Exception("Not enough seats available Exception");
 			
 		this.availableSeats -= numberOfSeatsToReserve;
-		
 	}
-
 }

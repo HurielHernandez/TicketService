@@ -11,8 +11,11 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.revature.TicketService.mock.SeatHolds;
+import com.revature.TicketService.mock.Seats;
 import com.revature.TicketService.models.SeatHold;
-import com.revature.TicketService.models.Seats;
+import com.revature.TicketService.repository.SeatHoldRepositoryImpl;
+
 
 public class TicketServiceTest
 {
@@ -21,18 +24,18 @@ public class TicketServiceTest
 	public void setSeats()
 	{
 		Seats.getInstance().setAvailableSeats(10);
-		TemporaryHoldService.getInstance().setTemporaryHolds(new ArrayList<SeatHold>());
+		SeatHolds.getInstance().setSeatHolds(new ArrayList<SeatHold>());
 	}
 	
 	@After
 	public void resetSeats()
 	{
 		Seats.getInstance().setAvailableSeats(10);
-		TemporaryHoldService.getInstance().setTemporaryHolds(new ArrayList<SeatHold>());
+		SeatHolds.getInstance().setSeatHolds(new ArrayList<SeatHold>());
 	}
 	
 	
-	@Test
+	@Test 
 	public void returnsStartingNumberOfAvailableSeats()
 	{
 		int expected = 10;
@@ -51,23 +54,21 @@ public class TicketServiceTest
 		
 		test.findAndHoldSeats(numberOfSeatsToRemove, testEmail);
 		
-		assertEquals(expected, test.numSeatsAvailable());
+		assertEquals( expected, test.numSeatsAvailable());
 	}
 	
 	@Test 
-	public void returnExceptionIfNotEnoughSeatsAvailableToHold()
+	public void returnNullIfNotEnoughSeats()
 	{
 		int numberOfSeatsToRemove = 11;
 		String testEmail ="testEmail@test.com";
 		TicketService test = new TicketServiceImpl();
 		
-		try {
-			test.findAndHoldSeats(numberOfSeatsToRemove, testEmail);
-		}catch(Exception e)
-		{
-			assert(e.getMessage().equals("Not enough seats available Exception"));
-		}
+		SeatHold seatHold = test.findAndHoldSeats(numberOfSeatsToRemove, testEmail);
 		
+		System.out.println("not null" + SeatHolds.getInstance().getSeatHolds());
+		
+		assert(seatHold == null);
 	}
 	
 	@Test
@@ -81,27 +82,30 @@ public class TicketServiceTest
 		//Create SeatHold and add to TemporaryHoldService
 		SeatHold seatHold = new SeatHold(numberOfSeatsToReserve, testEmail);
 		seatHold.setSeatHoldId(seatHoldId);
-		TemporaryHoldService.getInstance().getTemporaryHolds().add(seatHold);
+		SeatHolds.getInstance().addSeatHold(seatHold);
 
 		//Create TicketService and get confirmation number
 		TicketService test = new TicketServiceImpl();
-		String confimationNumber = test.reserveSeats(seatHoldId, testEmail);
-	
-		assertEquals(expected, confimationNumber);
+		String confirmationNumber = test.reserveSeats(seatHoldId, testEmail);
+		
+		assertEquals(expected, confirmationNumber);
 	}
 	
 	@Test
-	public void shouldReturnNullConfirmationNumberWhenReservingWithIncorrectEmail() throws Exception
+	public void shouldReturnNullConfirmationNumberWhenReservingWithIncorrectEmail() throws Exception 
 	{
+		SeatHoldRepositoryImpl seatHoldRepository = new SeatHoldRepositoryImpl();
 		String testEmail ="testEmail@test.com";
 		String wrongEmail ="wrongEmail@test.com";
 		int numberOfSeatsToReserve = 5;
 		int seatHoldId = 512345;
 		
-		//Create SeatHold and add to TemporaryHoldService
+		//Create SeatHold and add to SeatHold
 		SeatHold seatHold = new SeatHold(numberOfSeatsToReserve, testEmail);
 		seatHold.setSeatHoldId(seatHoldId);
-		TemporaryHoldService.getInstance().getTemporaryHolds().add(seatHold);
+		seatHoldRepository.addSeatHold(seatHold);
+		
+		System.out.println("TEMPORARY" + seatHoldRepository.all());
 
 		//Create TicketService and get confirmation number
 		TicketService test = new TicketServiceImpl();
@@ -113,15 +117,16 @@ public class TicketServiceTest
 	@Test
 	public void shouldReturnNullConfirmationNumberWhenReservingWithIncorrectConfirmationNumber() throws Exception
 	{
+		SeatHoldRepositoryImpl seatHoldRepository = new SeatHoldRepositoryImpl();
 		String testEmail ="testEmail@test.com";
 		int numberOfSeatsToReserve = 5;
 		int seatHoldId = 512345;
 		int incorrectConfimationNumber = 542222;
 		
-		//Create SeatHold and add to TemporaryHoldService
+		//Create SeatHold and add to SeatHold
 		SeatHold seatHold = new SeatHold(numberOfSeatsToReserve, testEmail);
 		seatHold.setSeatHoldId(seatHoldId);
-		TemporaryHoldService.getInstance().getTemporaryHolds().add(seatHold);
+		seatHoldRepository.addSeatHold(seatHold);
 
 		//Create TicketService and get confirmation number
 		TicketService test = new TicketServiceImpl();
@@ -130,10 +135,60 @@ public class TicketServiceTest
 		assertNull(confimationNumber);
 	}
 	
+	@Test
+	public void shouldReturnConfirmationNumberWhenReservingWithCorrectConfirmationNumber() throws Exception
+	{
+		SeatHoldRepositoryImpl seatHoldRepository = new SeatHoldRepositoryImpl();
+		String testEmail ="testEmail@test.com";
+		int numberOfSeatsToReserve = 5;
+		int seatHoldId = 512345;
+		String expectedConfirmationNumber = seatHoldId + "";
+		
+		//Create SeatHold and add to SeatHold
+		SeatHold seatHold = new SeatHold(numberOfSeatsToReserve, testEmail);
+		seatHold.setSeatHoldId(seatHoldId);
+		seatHoldRepository.addSeatHold(seatHold);
+
+		//Create TicketService and get confirmation number
+		TicketService test = new TicketServiceImpl();
+		String confimationNumber = test.reserveSeats(seatHoldId, testEmail);
+	
+		assertEquals(expectedConfirmationNumber, confimationNumber);
+	}
+	
+	@Test
+	public void shouldReturnConfirmationNumberWhenTryingToReserveTicketswithinExpirationTime() throws Exception
+	{
+		SeatHoldRepositoryImpl seatHoldRepository = new SeatHoldRepositoryImpl();            
+		String testEmail ="testEmail@test.com";
+		int numberOfSeatsToReserve = 5;
+		int seatHoldId = 512345;
+		String expectedConfirmationNumber = seatHoldId +"";
+		
+		//simulate current time is 31 Minutes from now
+		Calendar mockTime = Calendar.getInstance();
+		mockTime.add(Calendar.MINUTE, 30);
+		Date reservedOn = mockTime.getTime();
+		
+		//Create SeatHold and add to TemporaryHoldService
+		SeatHold seatHold = new SeatHold(numberOfSeatsToReserve, testEmail);
+		seatHold.setSeatHoldId(seatHoldId);
+		seatHold.setRerservedOn(reservedOn);
+		seatHoldRepository.addSeatHold(seatHold);
+
+		//Create TicketService and get confirmation number
+		TicketService test = new TicketServiceImpl();
+		
+		String result = test.reserveSeats(seatHoldId, testEmail);
+		
+		assertEquals(expectedConfirmationNumber, result);
+
+	}
 	
 	@Test
 	public void shouldReturnNullConfirmationNumberWhenTryingToReserveTicketsPastExpirationTime() throws Exception
 	{
+		SeatHoldRepositoryImpl seatHoldRepository = new SeatHoldRepositoryImpl();            
 		String testEmail ="testEmail@test.com";
 		int numberOfSeatsToReserve = 5;
 		int seatHoldId = 512345;
@@ -147,8 +202,7 @@ public class TicketServiceTest
 		SeatHold seatHold = new SeatHold(numberOfSeatsToReserve, testEmail);
 		seatHold.setSeatHoldId(seatHoldId);
 		seatHold.setRerservedOn(reservedOn);
-		
-		TemporaryHoldService.getInstance().addTemporarySeatHold(seatHold);
+		seatHoldRepository.addSeatHold(seatHold);
 
 		//Create TicketService and get confirmation number
 		TicketService test = new TicketServiceImpl();
@@ -156,7 +210,5 @@ public class TicketServiceTest
 		String result = test.reserveSeats(seatHoldId, testEmail);
 		
 		assertNull(result);
-
 	}
-
 }

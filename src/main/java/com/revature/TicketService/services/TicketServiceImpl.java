@@ -1,37 +1,50 @@
 package com.revature.TicketService.services;
 
 import com.revature.TicketService.models.SeatHold;
-import com.revature.TicketService.models.Seats;
+import com.revature.TicketService.repository.SeatHoldRepositoryImpl;
+import com.revature.TicketService.repository.SeatHoldRespository;
+import com.revature.TicketService.repository.SeatRepository;
+import com.revature.TicketService.repository.SeatRepositoryImpl;
 import com.revature.TicketService.utilities.SeatHoldTimer;
 
 public class TicketServiceImpl implements TicketService
 {
 	public int numSeatsAvailable()
 	{
-		return Seats.getInstance().getAvailableSeats();
+		SeatRepository seatRepository = new SeatRepositoryImpl();
+		
+		return seatRepository.getAvailableSeats();
 	}
 
 	public SeatHold findAndHoldSeats(int numberOfSeatsToReserve, String customerEmail)
 	{
-		SeatHoldTimer.findAndRemoveExpiredSeatHolds();
+		SeatRepository seatRepository = new SeatRepositoryImpl();
+		SeatHoldRespository seatHoldRepository = new SeatHoldRepositoryImpl();
+		
+		SeatHoldTimer.findAndReleaseExpiredSeatHolds();
 		
 		try{
-			return new SeatHold( numberOfSeatsToReserve, customerEmail);
+			int seatsReserved = seatRepository.findAndRemove(numberOfSeatsToReserve);
+			SeatHold seatHold = new SeatHold(seatsReserved, customerEmail);
+			seatHoldRepository.addSeatHold(seatHold);	
+			System.out.println(seatHoldRepository.all());
+			return seatHold;
+			
 		} catch (Exception e){
 			e.printStackTrace();
+			return null;	
 		}
-		
-		return null;
 	}
 
 	public String reserveSeats(int seatHoldId, String customerEmail)
 	{
-		SeatHoldTimer.findAndRemoveExpiredSeatHolds();
+		SeatHoldRespository seatHoldRepository = new SeatHoldRepositoryImpl();
+
+		SeatHoldTimer.findAndReleaseExpiredSeatHolds();
 		
 		try {
-			SeatHold seatHold = TemporaryHoldService.getInstance().removeTemporaryHold(seatHoldId, customerEmail);
-			ReservationService.getInstance().addReservation(seatHold);
-			
+			SeatHold seatHold = seatHoldRepository.removeSeatHold(seatHoldId, customerEmail);
+//			ReservationService.getInstance().addReservation(seatHold);
 			return String.format("%s", seatHold.getSeatHoldId());
 		}catch(Exception e) {
 			e.printStackTrace();

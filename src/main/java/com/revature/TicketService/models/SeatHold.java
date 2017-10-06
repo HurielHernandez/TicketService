@@ -2,20 +2,18 @@ package com.revature.TicketService.models;
 
 import java.util.Date;
 
-
-
 public class SeatHold
 {
 	private int seatHoldId;
 	private int numberOfSeatsReserved;
 	private String customerEmail;
 	private Date rerservedOn;
-	
-	public SeatHold( int numberOfSeatsReserved, String customerEmail) throws Exception
+
+	public SeatHold(int numberOfSeatsReserved, String customerEmail) throws Exception
 	{
-		this.setNumberOfSeatsReserved(numberOfSeatsReserved);
+		this.numberOfSeatsReserved = numberOfSeatsReserved;
 		this.customerEmail = customerEmail;
-		this.seatHoldId =  this.hashCode();
+		this.seatHoldId = this.hashCode();
 		this.rerservedOn = new Date();
 	}
 
@@ -34,9 +32,8 @@ public class SeatHold
 		return numberOfSeatsReserved;
 	}
 
-	public void setNumberOfSeatsReserved(int numberOfSeatsReserved) throws Exception
+	public void setNumberOfSeatsReserved(int numberOfSeatsReserved)
 	{
-		Seats.getInstance().reserveSeats(numberOfSeatsReserved);
 		this.numberOfSeatsReserved = numberOfSeatsReserved;
 	}
 
@@ -66,5 +63,5 @@ public class SeatHold
 		return "SeatHold [seatHoldId=" + seatHoldId + ", numberOfSeatsReserved=" + numberOfSeatsReserved
 				+ ", customerEmail=" + customerEmail + ", rerservedOn=" + rerservedOn + "]";
 	}
-	
+
 }

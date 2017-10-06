@@ -1,29 +1,41 @@
 package com.revature.TicketService.utilities;
 
+import java.util.List;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.revature.TicketService.mock.Seats;
 import com.revature.TicketService.models.SeatHold;
-import com.revature.TicketService.models.Seats;
-import com.revature.TicketService.services.TemporaryHoldService;
+import com.revature.TicketService.repository.SeatHoldRepositoryImpl;
+import com.revature.TicketService.repository.SeatHoldRespository;
 
 public class SeatHoldTimer
 {
-	public static void findAndRemoveExpiredSeatHolds()
+	public final static int SEAT_HOLD_TIMEOUT_IN_SECONDS = 1800; //30 min
+	
+	static SeatHoldRespository seatHoldRepository = new SeatHoldRepositoryImpl();
+	
+	public static void findAndReleaseExpiredSeatHolds()
 	{
-		if(TemporaryHoldService.getInstance().getTemporaryHolds().size() == 0)
+		if(seatHoldRepository.all().size() == 0)
 			return;
 		
-		Date experiationTime;
-		
 		Calendar now = Calendar.getInstance();
-		
-	    now.add(Calendar.SECOND, Seats.getInstance().SEAT_HOLD_TIMEOUT_IN_SECONDS);
-	    experiationTime = now.getTime();
+	    now.add(Calendar.SECOND, SEAT_HOLD_TIMEOUT_IN_SECONDS);
+	    Date expirationTime = now.getTime();
 		
 		//If reservedOn is greater than expirationTime remove
-		TemporaryHoldService.getInstance().getTemporaryHolds()
-			.removeIf((SeatHold s) -> s.getRerservedOn().compareTo(experiationTime) > 0);
-			
+	   List<SeatHold> expired = seatHoldRepository.getExpiredSeatHold(expirationTime);
+	   
+	   SeatHoldRepositoryImpl seatHoldRepository = new SeatHoldRepositoryImpl();
+	   
+	   final int totalSeatsToRelease = (int) expired.stream()
+			   										.map(s -> s.getNumberOfSeatsReserved())
+			   										.count();
+	   
+	   expired.forEach(e -> seatHoldRepository.removeSeatHold(e.getSeatHoldId(), e.getCustomerEmail()));
+	   
+//	   Seats.getInstance().ad
+	   
 	}
 }

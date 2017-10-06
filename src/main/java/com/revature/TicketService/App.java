@@ -1,9 +1,8 @@
 package com.revature.TicketService;
 
 import com.revature.TicketService.models.SeatHold;
-import com.revature.TicketService.models.Seats;
-import com.revature.TicketService.services.ReservationService;
-import com.revature.TicketService.services.TemporaryHoldService;
+import com.revature.TicketService.mock.SeatHolds;
+import com.revature.TicketService.mock.Seats;
 import com.revature.TicketService.services.TicketService;
 import com.revature.TicketService.services.TicketServiceImpl;
 import com.revature.TicketService.utilities.SeatHoldTimer;
@@ -20,18 +19,10 @@ public class App
         
         SeatHold seatHold = ticketService.findAndHoldSeats(1, "huriel.hdz@gmail.com");
         
-        
-        try
-		{
-			TemporaryHoldService.getInstance().addTemporarySeatHold(seatHold);
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-			seatHold = null;
-		}
+//        System.out.println(seatHold);
         
         
-        System.out.println(TemporaryHoldService.getInstance());
+//        System.out.println(SeatHolds.getInstance().getSeatHolds());
 //      
 //        try {
 //        	System.out.println(ticketService.reserveSeats(seatHold.getSeatHoldId(), "huriel.hdz@gmail.com"));
