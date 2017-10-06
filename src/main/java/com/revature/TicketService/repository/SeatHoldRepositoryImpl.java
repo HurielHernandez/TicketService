@@ -21,7 +21,7 @@ public class SeatHoldRepositoryImpl implements SeatHoldRespository
 	{
 		try {
 			return  SeatHolds.getInstance().getSeatHolds().stream()
-				.filter((SeatHold s) -> s.getRerservedOn().compareTo(expirationTime) > 0)
+				.filter((SeatHold seatHold) -> seatHold.getRerservedOn().compareTo(expirationTime) > 0)
 				.collect(Collectors.toList());
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -44,11 +44,9 @@ public class SeatHoldRepositoryImpl implements SeatHoldRespository
 	{
 		try {
 		      SeatHold seatHold = SeatHolds.getInstance().getSeatHolds().stream()
-		    		  					.filter(h -> h.getCustomerEmail().equals(customerEmail) && h.getSeatHoldId() == seatHoldId)
+		    		  					.filter(seathold -> seathold.getCustomerEmail().equals(customerEmail) && seathold.getSeatHoldId() == seatHoldId)
 							    		.findFirst()
 							    		.get();
-		      
-		     
 		      return seatHold;
 			}catch(Exception e)
 			{
