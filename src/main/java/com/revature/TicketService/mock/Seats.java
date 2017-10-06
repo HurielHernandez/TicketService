@@ -1,14 +1,27 @@
 package com.revature.TicketService.mock;
 
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.stream.Collectors;
+
+import com.revature.TicketService.models.Seat;
+
 public class Seats
 {
 	private final int TOTAL_SEATS = 10;
 
 	private static Seats instance = null;
 	
-	private int availableSeats = TOTAL_SEATS;
+	private PriorityQueue<Seat> seats = new PriorityQueue<Seat>();
 
-	private Seats(){}
+	private Seats()
+	{
+		//Add mock seats
+		for(int i  = 0; i < TOTAL_SEATS; i++)
+		{
+			seats.add(new Seat(i+1));
+		}
+	}
 
 	public static Seats getInstance()
 	{
@@ -19,21 +32,30 @@ public class Seats
 		return instance;
 	}
 
-	public int getAvailableSeats()
+	public List<Seat> getAvailableSeats()
 	{
-		return availableSeats;
+		if(this.seats.isEmpty())
+			return null;
+		
+		return this.seats.stream().collect(Collectors.toList());
 	}
-
-	public void setAvailableSeats(int availableSeats)
+	
+	public void setSeats(int numberOfSeats)
 	{
-		this.availableSeats = availableSeats;
+		seats = new PriorityQueue<Seat>();
+		for(int i  = 0; i < numberOfSeats; i++)
+		{
+			seats.add(new Seat(i+1));
+		}
 	}
-
-	public void reserveSeats(int numberOfSeatsToReserve) throws Exception 
+	
+	public void add(Seat seat)
 	{
-		if(this.availableSeats < numberOfSeatsToReserve)
-			throw new Exception("Not enough seats available Exception");
-			
-		this.availableSeats -= numberOfSeatsToReserve;
+		seats.add(seat);
+	}
+	
+	public void remove(Seat seat)
+	{
+		seats.remove(seat);
 	}
 }

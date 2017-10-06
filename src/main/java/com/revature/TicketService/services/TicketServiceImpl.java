@@ -1,5 +1,11 @@
 package com.revature.TicketService.services;
 
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import com.revature.TicketService.mock.Seats;
+import com.revature.TicketService.models.Seat;
 import com.revature.TicketService.models.SeatHold;
 import com.revature.TicketService.repository.SeatHoldRepositoryImpl;
 import com.revature.TicketService.repository.SeatHoldRespository;
@@ -12,8 +18,11 @@ public class TicketServiceImpl implements TicketService
 	public int numSeatsAvailable()
 	{
 		SeatRepository seatRepository = new SeatRepositoryImpl();
+		List<Seat> seats = seatRepository.findAll();
+		if ( seats == null )
+			return 0;
 		
-		return seatRepository.getAvailableSeats();
+		return seats.size();
 	}
 
 	public SeatHold findAndHoldSeats(int numberOfSeatsToReserve, String customerEmail)
@@ -24,10 +33,15 @@ public class TicketServiceImpl implements TicketService
 		SeatHoldTimer.findAndReleaseExpiredSeatHolds();
 		
 		try{
-			int seatsReserved = seatRepository.findAndRemove(numberOfSeatsToReserve);
-			SeatHold seatHold = new SeatHold(seatsReserved, customerEmail);
-			seatHoldRepository.addSeatHold(seatHold);	
-			System.out.println(seatHoldRepository.all());
+			List<Seat> seatsToHold = seatRepository.findSeats(numberOfSeatsToReserve);
+			
+			if(seatsToHold.size() < numberOfSeatsToReserve)
+				throw new Exception("Not enough Seats Exception");
+			
+			seatsToHold.stream().forEach(s -> seatRepository.remove(s));
+			
+			SeatHold seatHold = new SeatHold(seatsToHold, customerEmail);
+			seatHoldRepository.add(seatHold);	
 			return seatHold;
 			
 		} catch (Exception e){
@@ -43,8 +57,10 @@ public class TicketServiceImpl implements TicketService
 		SeatHoldTimer.findAndReleaseExpiredSeatHolds();
 		
 		try {
-			SeatHold seatHold = seatHoldRepository.removeSeatHold(seatHoldId, customerEmail);
-//			ReservationService.getInstance().addReservation(seatHold);
+			SeatHold seatHold = seatHoldRepository.findBySeatHoldIdAndEmail(seatHoldId, customerEmail);
+			seatHoldRepository.remove(seatHold);
+			
+			//TODO : Add Reservation Repository
 			return String.format("%s", seatHold.getSeatHoldId());
 		}catch(Exception e) {
 			e.printStackTrace();

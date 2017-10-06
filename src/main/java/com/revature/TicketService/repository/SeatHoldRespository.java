@@ -7,11 +7,13 @@ import com.revature.TicketService.models.SeatHold;
 
 public interface SeatHoldRespository
 {
-	public void addSeatHold(SeatHold seatHold);
-	
 	public List<SeatHold> all();
 	
-	public List<SeatHold> getExpiredSeatHold(Date currentDate);
+	public List<SeatHold> findByReservedOnGreaterThan(Date expirationDate);
 	
-	public SeatHold removeSeatHold(int seatHoldId, String customerEmail);
+	public SeatHold findBySeatHoldIdAndEmail(int seatHoldId, String customerEmail);
+	
+	public void add(SeatHold seatHold);
+	
+	public void remove(SeatHold seatHold);
 }

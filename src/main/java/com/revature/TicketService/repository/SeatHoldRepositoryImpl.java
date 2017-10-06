@@ -11,7 +11,26 @@ public class SeatHoldRepositoryImpl implements SeatHoldRespository
 {
 
 	@Override
-	public void addSeatHold(SeatHold seatHold)
+	public List<SeatHold> all()
+	{
+		return SeatHolds.getInstance().getSeatHolds();
+	}
+	
+	@Override
+	public List<SeatHold> findByReservedOnGreaterThan(Date expirationTime)
+	{
+		try {
+			return  SeatHolds.getInstance().getSeatHolds().stream()
+				.filter((SeatHold s) -> s.getRerservedOn().compareTo(expirationTime) > 0)
+				.collect(Collectors.toList());
+			}catch(Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+	}
+
+	@Override
+	public void add(SeatHold seatHold)
 	{
 		try{
 			SeatHolds.getInstance().addSeatHold(seatHold);
@@ -19,43 +38,30 @@ public class SeatHoldRepositoryImpl implements SeatHoldRespository
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
-	public List<SeatHold> all()
-	{
-		return SeatHolds.getInstance().getSeatHolds();
-	}
-
-	@Override
-	public List<SeatHold> getExpiredSeatHold(Date experiationTime)
+	public SeatHold findBySeatHoldIdAndEmail(int seatHoldId, String customerEmail)
 	{
 		try {
-		return  SeatHolds.getInstance().getSeatHolds().stream()
-			.filter((SeatHold s) -> s.getRerservedOn().compareTo(experiationTime) > 0)
-			.collect(Collectors.toList());
-		}catch(Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	@Override
-	public SeatHold removeSeatHold(int seatHoldId, String customerEmail)
-	{
-			try {
 		      SeatHold seatHold = SeatHolds.getInstance().getSeatHolds().stream()
 		    		  					.filter(h -> h.getCustomerEmail().equals(customerEmail) && h.getSeatHoldId() == seatHoldId)
 							    		.findFirst()
 							    		.get();
 		      
-		      SeatHolds.getInstance().getSeatHolds().remove(seatHold);
+		     
 		      return seatHold;
 			}catch(Exception e)
 			{
 				e.printStackTrace();
 				return null;
 			}
-		    
 		
 	}
+
+	@Override
+	public void remove(SeatHold seatHold)
+	{
+		 SeatHolds.getInstance().getSeatHolds().remove(seatHold);
+	}
+
 }

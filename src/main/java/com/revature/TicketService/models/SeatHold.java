@@ -1,19 +1,20 @@
 package com.revature.TicketService.models;
 
 import java.util.Date;
+import java.util.List;
 
 public class SeatHold
 {
 	private int seatHoldId;
-	private int numberOfSeatsReserved;
+	private List<Seat> seats;
 	private String customerEmail;
 	private Date rerservedOn;
-
-	public SeatHold(int numberOfSeatsReserved, String customerEmail) throws Exception
+	
+	public SeatHold(List<Seat> seats, String customerEmail) throws Exception
 	{
-		this.numberOfSeatsReserved = numberOfSeatsReserved;
-		this.customerEmail = customerEmail;
 		this.seatHoldId = this.hashCode();
+		this.customerEmail = customerEmail;
+		this.seats = seats;
 		this.rerservedOn = new Date();
 	}
 
@@ -29,12 +30,7 @@ public class SeatHold
 
 	public int getNumberOfSeatsReserved()
 	{
-		return numberOfSeatsReserved;
-	}
-
-	public void setNumberOfSeatsReserved(int numberOfSeatsReserved)
-	{
-		this.numberOfSeatsReserved = numberOfSeatsReserved;
+		return this.seats.size();
 	}
 
 	public String getCustomerEmail()
@@ -56,12 +52,21 @@ public class SeatHold
 	{
 		this.rerservedOn = rerservedOn;
 	}
+	
+	public List<Seat> getSeats()
+	{
+		return seats;
+	}
+
+	public void setSeats(List<Seat> seats)
+	{
+		this.seats = seats;
+	}
 
 	@Override
 	public String toString()
 	{
-		return "SeatHold [seatHoldId=" + seatHoldId + ", numberOfSeatsReserved=" + numberOfSeatsReserved
-				+ ", customerEmail=" + customerEmail + ", rerservedOn=" + rerservedOn + "]";
+		return "SeatHold [seatHoldId=" + seatHoldId + ", seats=" + seats + ", customerEmail=" + customerEmail
+				+ ", rerservedOn=" + rerservedOn + "]";
 	}
-
 }
