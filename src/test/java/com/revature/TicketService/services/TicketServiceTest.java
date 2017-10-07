@@ -159,9 +159,9 @@ public class TicketServiceTest
 		String expectedConfirmationNumber = seatHoldId +"";
 		List<Seat> seatsToHold = seatRepository.findSeats(numberOfSeatsToReserve);
 		
-		//simulate current time is 31 Minutes from now
+		//simulate reserved 20 Minutes ago
 		Calendar mockTime = Calendar.getInstance();
-		mockTime.add(Calendar.MINUTE, 30);
+		mockTime.add(Calendar.MINUTE, -20);
 		Date reservedOn = mockTime.getTime();
 		
 		//Create SeatHold and add to TemporaryHoldService
@@ -187,9 +187,9 @@ public class TicketServiceTest
 		int numberOfSeatsToReserve = 5;
 		int seatHoldId = 512345;
 		
-		//simulate current time is 31 Minutes from now
+		//simulate reserved  31 Minutes ago
 		Calendar mockTime = Calendar.getInstance();
-		mockTime.add(Calendar.MINUTE, 31);
+		mockTime.add(Calendar.MINUTE, -31);
 		Date reservedOn = mockTime.getTime();
 		
 		//Create SeatHold and add to TemporaryHoldService
