@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
+
+import com.revature.TicketService.App;
 import com.revature.TicketService.mock.SeatHolds;
 import com.revature.TicketService.models.SeatHold;
 
@@ -24,7 +27,7 @@ public class SeatHoldRepositoryImpl implements SeatHoldRespository
 				.filter((SeatHold seatHold) -> seatHold.getRerservedOn().compareTo(expirationTime) > 0)
 				.collect(Collectors.toList());
 			}catch(Exception e) {
-				e.printStackTrace();
+				App.logger.error(e);
 				return null;
 			}
 	}
@@ -35,7 +38,7 @@ public class SeatHoldRepositoryImpl implements SeatHoldRespository
 		try{
 			SeatHolds.getInstance().addSeatHold(seatHold);
 		} catch (Exception e){
-			e.printStackTrace();
+			App.logger.error(e);
 		}
 	}
 	
@@ -50,10 +53,9 @@ public class SeatHoldRepositoryImpl implements SeatHoldRespository
 		      return seatHold;
 			}catch(Exception e)
 			{
-				e.printStackTrace();
+				App.logger.error(e);
 				return null;
 			}
-		
 	}
 
 	@Override
@@ -61,5 +63,4 @@ public class SeatHoldRepositoryImpl implements SeatHoldRespository
 	{
 		 SeatHolds.getInstance().getSeatHolds().remove(seatHold);
 	}
-
 }

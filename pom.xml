@@ -8,12 +8,12 @@
 	<packaging>jar</packaging>
 
 	<name>TicketService</name>
-	
+
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		
+
 	</properties>
 
 	<dependencies>
@@ -24,8 +24,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -41,6 +46,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-	
+
+
 </project>

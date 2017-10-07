@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
+
+import com.revature.TicketService.App;
 import com.revature.TicketService.mock.Seats;
 import com.revature.TicketService.models.Seat;
 import com.revature.TicketService.models.SeatHold;
@@ -15,6 +18,7 @@ import com.revature.TicketService.utilities.SeatHoldTimer;
 
 public class TicketServiceImpl implements TicketService
 {
+	
 	public int numSeatsAvailable()
 	{
 		SeatRepository seatRepository = new SeatRepositoryImpl();
@@ -38,14 +42,14 @@ public class TicketServiceImpl implements TicketService
 			if(seatsToHold.size() < numberOfSeatsToReserve)
 				throw new Exception("Not enough Seats Exception");
 			
-			seatsToHold.stream().forEach(s -> seatRepository.remove(s));
+			seatsToHold.stream().forEach(seat -> seatRepository.remove(seat));
 			
 			SeatHold seatHold = new SeatHold(seatsToHold, customerEmail);
 			seatHoldRepository.add(seatHold);	
 			return seatHold;
 			
 		} catch (Exception e){
-			e.printStackTrace();
+			App.logger.error(e);
 			return null;	
 		}
 	}
@@ -63,7 +67,7 @@ public class TicketServiceImpl implements TicketService
 			//TODO : Add Reservation Repository
 			return String.format("%s", seatHold.getSeatHoldId());
 		}catch(Exception e) {
-			e.printStackTrace();
+			App.logger.error(e);
 			return null;
 		}
 	}
