@@ -1,13 +1,8 @@
 package com.revature.TicketService.services;
 
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 import org.apache.log4j.Logger;
 
-import com.revature.TicketService.App;
-import com.revature.TicketService.mock.Seats;
 import com.revature.TicketService.models.Seat;
 import com.revature.TicketService.models.SeatHold;
 import com.revature.TicketService.repository.SeatHoldRepositoryImpl;
@@ -18,6 +13,7 @@ import com.revature.TicketService.utilities.SeatHoldTimer;
 
 public class TicketServiceImpl implements TicketService
 {
+	private final static Logger logger = Logger.getLogger(TicketServiceImpl.class.getName());
 	
 	public int numSeatsAvailable()
 	{
@@ -49,7 +45,7 @@ public class TicketServiceImpl implements TicketService
 			return seatHold;
 			
 		} catch (Exception e){
-			App.logger.error(e);
+			logger.error(e);
 			return null;	
 		}
 	}
@@ -67,7 +63,7 @@ public class TicketServiceImpl implements TicketService
 			//TODO : Add Reservation Repository
 			return String.format("%s", seatHold.getSeatHoldId());
 		}catch(Exception e) {
-			App.logger.error(e);
+			logger.error(e);
 			return null;
 		}
 	}
