@@ -24,4 +24,5 @@ $ mvn test
 
 Run Application
 ```
-$ java -jar /target/TicketService-0.0.1-Snapshot.jar
+$ java -jar target/TicketService-0.0.1-Snapshot-jar-with-dependencies.jar
+```
