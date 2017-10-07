@@ -5,9 +5,13 @@ import java.util.List;
 
 import com.revature.TicketService.models.SeatHold;
 
+/**
+* SeatHolds is a Singleton class that mocks the data that a SeatHoldRepository can contain.  It is used to instantiate,
+* add and remove SeatHolds.  SeatHolds uses an ArrayList to hold all of the SeatHolds. 
+* 
+*/
 public class SeatHolds
 {
-
 	private static SeatHolds instance = null;
 	
 	private List<SeatHold>seatHolds = new ArrayList<SeatHold>();
@@ -43,15 +47,15 @@ public class SeatHolds
 	
 	public SeatHold removeSeatHold(int seatHoldId, String customerEmail) throws Exception
 	{
-		 try {
-		      SeatHold seatHold = this.seatHolds.stream()
-		    		  					.filter(h -> h.getCustomerEmail().equals(customerEmail) && h.getSeatHoldId() == seatHoldId)
-							    		.findFirst()
-							    		.get();
-		      
-		      this.seatHolds.remove(seatHold);
-		      return seatHold;
-		 }
+		try
+		{
+			SeatHold seatHold = this.seatHolds.stream()
+					.filter(seathold -> seathold.getCustomerEmail().equals(customerEmail) && seathold.getSeatHoldId() == seatHoldId)
+					.findFirst().get();
+
+			this.seatHolds.remove(seatHold);
+			return seatHold;
+		}
 		 catch(NullPointerException e)
 		 {
 			 throw new Exception("SeatHold not found Exception");

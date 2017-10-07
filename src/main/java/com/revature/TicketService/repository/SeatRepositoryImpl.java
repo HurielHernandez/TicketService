@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 import com.revature.TicketService.mock.Seats;
 import com.revature.TicketService.models.Seat;
 
+/**
+* Seat Repository Implementation that mimics calls to a database using a Singleton List for storage.
+*/
 public class SeatRepositoryImpl implements SeatRepository
 {
 	@Override

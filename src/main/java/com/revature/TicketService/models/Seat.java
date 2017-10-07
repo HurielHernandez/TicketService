@@ -1,5 +1,10 @@
 package com.revature.TicketService.models;
 
+/**
+* Seat model used to represent a Seat that a customer can reserve.  Seat model only contains an integer 
+* id that is used to identify a Seat.  More properties can be added in extend functionality such as Seat 
+* price.
+*/
 public class Seat implements Comparable<Seat>
 {
 	public int seatNumber;

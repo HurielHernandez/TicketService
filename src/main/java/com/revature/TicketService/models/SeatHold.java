@@ -3,6 +3,11 @@ package com.revature.TicketService.models;
 import java.util.Date;
 import java.util.List;
 
+/**
+* SeatHold model used to represent a SeatHold that contains which Seats a customer selected and 
+* and email to identify the customer that reserved the Seats.  SeatHold adds a reservedOn Date field that
+* contains a timestamp when the the SeatHold was created.  It is used to identify expired SeatHolds.
+*/
 public class SeatHold
 {
 	private int seatHoldId;
