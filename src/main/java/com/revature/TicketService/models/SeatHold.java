@@ -15,7 +15,7 @@ public class SeatHold
 	private String customerEmail;
 	private Date rerservedOn;
 	
-	public SeatHold(List<Seat> seats, String customerEmail) throws Exception
+	public SeatHold(List<Seat> seats, String customerEmail)
 	{
 		this.seatHoldId = this.hashCode();
 		this.customerEmail = customerEmail;
