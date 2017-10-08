@@ -58,6 +58,10 @@ public class TicketServiceImpl implements TicketService
 		
 		try {
 			SeatHold seatHold = seatHoldRepository.findBySeatHoldIdAndEmail(seatHoldId, customerEmail);
+			
+			if(seatHold == null)
+				throw new Exception("SeatHold not found Exception");
+			
 			seatHoldRepository.remove(seatHold);
 			
 			//TODO : Add Reservation Repository

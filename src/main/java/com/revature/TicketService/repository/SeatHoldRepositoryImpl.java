@@ -55,7 +55,6 @@ public class SeatHoldRepositoryImpl implements SeatHoldRespository
 		      return seatHold;
 			}catch(Exception e)
 			{
-				logger.error(e);
 				return null;
 			}
 	}
