@@ -40,7 +40,7 @@ public class SeatHolds
 	public void addSeatHold(SeatHold seatHold) throws Exception
 	{
 		if(this.seatHolds.contains(seatHold))
-			throw new Exception("Seat Hold already added.");
+			throw new Exception("Seat Hold already added");
 		
 		this.seatHolds.add(seatHold);
 	}
